@@ -20,7 +20,7 @@
     "source": "https://github.com/AsgardCms/Page"
   },
   "require": {
-    "composer/installers": "~1.0",
+    "composer/installers": "~1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~7.0",
