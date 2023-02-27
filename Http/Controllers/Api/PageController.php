@@ -13,14 +13,8 @@ use Modules\Page\Transformers\PageTransformer;
 
 class PageController extends Controller
 {
-    /**
-     * @var PageRepository
-     */
-    private $page;
-
-    public function __construct(PageRepository $page)
+    public function __construct(private readonly PageRepository $page)
     {
-        $this->page = $page;
     }
 
     public function index()
@@ -66,5 +60,12 @@ class PageController extends Controller
             'errors' => false,
             'message' => trans('page::messages.page deleted'),
         ]);
+    }
+
+    public function sort(Request $request)
+    {
+        $this->page->sort($request->get('pages'));
+
+        return response()->json(true);
     }
 }

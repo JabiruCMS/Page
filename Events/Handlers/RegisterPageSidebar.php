@@ -19,10 +19,28 @@ class RegisterPageSidebar extends AbstractAdminSidebar
             $group->item(trans('page::pages.pages'), function (Item $item) {
                 $item->icon('fa fa-file');
                 $item->weight(10);
-                $item->route('admin.page.page.index');
+//                $item->route('admin.page.page.index');
                 $item->authorize(
                     $this->auth->hasAccess('page.pages.index')
                 );
+
+                $item->item(trans('page::pages.pages'), function (Item $item) {
+                    $item->icon('fa fa-list-ul');
+                    $item->weight(2);
+                    $item->route('admin.page.page.index');
+                    $item->authorize(
+                        $this->auth->hasAccess('page.pages.index')
+                    );
+                });
+
+                $item->item(trans('page::pages.tree'), function (Item $item) {
+                    $item->icon('fa fa-sitemap');
+                    $item->weight(3);
+                    $item->route('admin.page.page.tree');
+                    $item->authorize(
+                        $this->auth->hasAccess('page.pages.index')
+                    );
+                });
             });
         });
 

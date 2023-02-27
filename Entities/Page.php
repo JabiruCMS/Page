@@ -4,11 +4,33 @@ namespace Modules\Page\Entities;
 
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Traits\NamespacedEntity;
 use Modules\Media\Support\Traits\MediaRelation;
 use Modules\Tag\Contracts\TaggableInterface;
 use Modules\Tag\Traits\TaggableTrait;
+use Illuminate\Support\Collection;
 
+/**
+ * @property int $id
+ * @property bool $is_home
+ * @property string $template
+ * @property int $parent_id
+ * @property Page $parent
+ * @property int $order
+ * @property Collection<Page> $children
+ * @property string $title
+ * @property string $slug
+ * @property string $status
+ * @property string $body
+ * @property string $meta_title
+ * @property string $meta_description
+ * @property string $og_title
+ * @property string $og_description
+ * @property string $og_image
+ * @property string $og_type
+ */
 class Page extends Model implements TaggableInterface
 {
     use Translatable, TaggableTrait, NamespacedEntity, MediaRelation;
@@ -32,6 +54,8 @@ class Page extends Model implements TaggableInterface
         'template',
         // Translatable fields
         'page_id',
+        'parent_id',
+        'order',
         'title',
         'slug',
         'status',
@@ -87,5 +111,20 @@ class Page extends Model implements TaggableInterface
         }
 
         return $thumbnail;
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Page::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Page::class, 'parent_id')->orderBy('order');
+    }
+
+    public function isRoot(): bool
+    {
+        return $this->parent_id === null;
     }
 }

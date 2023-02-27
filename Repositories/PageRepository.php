@@ -60,4 +60,6 @@ interface PageRepository extends BaseRepository
      * @return mixed
      */
     public function markMultipleAsOfflineInAllLocales(array $pageIds);
+
+    public function sort($data);
 }

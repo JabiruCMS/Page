@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Mcamara\LaravelLocalization\LaravelLocalization;
+use Modules\Bocian\Support\EloquentRepositoryHelper;
 use Modules\Core\Repositories\Eloquent\EloquentBaseRepository;
 use Modules\Page\Entities\Page;
 use Modules\Page\Events\PageIsCreating;
@@ -19,6 +20,7 @@ use Modules\Page\Repositories\PageRepository;
 
 class EloquentPageRepository extends EloquentBaseRepository implements PageRepository
 {
+    use EloquentRepositoryHelper;
     /**
      * @inheritdoc
      */
@@ -220,4 +222,56 @@ class EloquentPageRepository extends EloquentBaseRepository implements PageRepos
             $this->markAsOfflineInAllLocales($this->find($pageId));
         }
     }
+
+    public function sort($data)
+    {
+        $data = json_decode(json_encode(json_decode($data)), true);
+
+        foreach ($data as $position => $item) {
+            $this->order($position, $item);
+        }
+    }
+
+    /**
+     * Order pages recursively
+     * @param int $position
+     * @param array $item
+     */
+    private function order($position, $item)
+    {
+        /** @var Page $page */
+        $page = $this->find($item['id']);
+
+        // set category as root if not already
+        if (!$page->isRoot()) {
+            $this->update($page, ['parent_id' => null]);
+        }
+
+        $this->update($page, ['order' => $position]);
+
+        if (isset($item['children'])) {
+            $this->handleChildrenForParent($page, $item['children']);
+        }
+    }
+
+    private function handleChildrenForParent(Page $parent, array $children)
+    {
+        foreach ($children as $position => $item) {
+            $page = $this->find($item['id']);
+
+            $this->update(
+                $page,
+                [
+                    'order' => $position,
+                    'parent_id' => $parent->id
+                ]
+            );
+
+            if (isset($item['children'])) {
+                $this->handleChildrenForParent($page, $item['children']);
+            }
+        }
+    }
+
+
 }

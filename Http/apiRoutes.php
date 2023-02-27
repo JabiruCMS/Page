@@ -29,6 +29,11 @@ $router->group(['prefix' => '/page', 'middleware' => ['api.token', 'auth.admin']
         'uses' => 'PageController@store',
         'middleware' => 'token-can:page.pages.create',
     ]);
+    $router->put('sort', [
+        'as' => 'api.page.page.sort',
+        'uses' => 'PageController@sort',
+        'middleware' => 'token-can:page.pages.edit',
+    ]);
     $router->post('pages/{page}', [
         'as' => 'api.page.page.find',
         'uses' => 'PageController@find',

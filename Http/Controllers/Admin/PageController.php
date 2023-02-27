@@ -7,19 +7,16 @@ use Modules\Page\Entities\Page;
 use Modules\Page\Http\Requests\CreatePageRequest;
 use Modules\Page\Http\Requests\UpdatePageRequest;
 use Modules\Page\Repositories\PageRepository;
+use Modules\Page\Services\PageRenderer;
 
 class PageController extends AdminBaseController
 {
-    /**
-     * @var PageRepository
-     */
-    private $page;
-
-    public function __construct(PageRepository $page)
+    public function __construct(
+        private readonly PageRepository $page,
+        private readonly PageRenderer $pageRenderer,
+    )
     {
         parent::__construct();
-
-        $this->page = $page;
     }
 
     public function index()
@@ -94,5 +91,15 @@ class PageController extends AdminBaseController
 
         return redirect()->route('admin.page.page.index')
             ->withSuccess(trans('page::messages.page deleted'));
+    }
+
+    public function tree()
+    {
+        return view('page::admin.tree')
+            ->with([
+                'pageStructure' => $this->pageRenderer->render(
+                    $this->page->whereNull('parent_id')->get()
+                )
+            ]);
     }
 }

@@ -9,6 +9,13 @@ $router->group(['prefix' => '/page'], function (Router $router) {
         'uses' => 'PageController@index',
         'middleware' => 'can:page.pages.index',
     ]);
+
+    $router->get('pages/tree', [
+        'as' => 'admin.page.page.tree',
+        'uses' => 'PageController@tree',
+        'middleware' => 'can:page.pages.index',
+    ]);
+
     $router->get('pages/create', [
         'as' => 'admin.page.page.create',
         'uses' => 'PageController@create',
