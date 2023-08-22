@@ -6,6 +6,7 @@ use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Bocian\Support\MediaHelper;
 use Modules\Core\Traits\NamespacedEntity;
 use Modules\Media\Support\Traits\MediaRelation;
 use Modules\Tag\Contracts\TaggableInterface;
@@ -33,7 +34,7 @@ use Illuminate\Support\Collection;
  */
 class Page extends Model implements TaggableInterface
 {
-    use Translatable, TaggableTrait, NamespacedEntity, MediaRelation;
+    use Translatable, TaggableTrait, NamespacedEntity, MediaRelation, MediaHelper;
 
     protected $table = 'page__pages';
     public $translatedAttributes = [
